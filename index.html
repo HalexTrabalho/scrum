@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entenda Scrum: Guia Completo para Desenvolvedores</title>
+    <meta name="description" content="Aprenda a metodologia Scrum, seus papéis, artefatos e cerimônias. Guia completo para desenvolvedores web com quiz interativo.">
+    <style>
+        /* --- CSS Reset & Variáveis --- */
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #00a8e8;
+            --accent-color: #ffc107;
+            --text-color: #333;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --success: #28a745;
+            --error: #dc3545;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+
+        /* --- Header --- */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* --- Container Principal --- */
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* --- Seções de Conteúdo --- */
+        article {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: #444;
+            margin: 1.5rem 0 0.5rem;
+            font-size: 1.4rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        ul {
+            list-style-position: inside;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        /* --- Cards de Papéis (Grid) --- */
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .role-card {
+            background: #e9ecef;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .role-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* --- Quiz Section --- */
+        #quiz-section {
+            background: var(--card-bg);
+            border-top: 5px solid var(--accent-color);
+        }
+
+        .quiz-question {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .quiz-question h4 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .options-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            padding: 0.8rem;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .options-group label:hover {
+            background: #e2e6ea;
+        }
+
+        .options-group input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        /* Feedback visual nas respostas */
+        .correct-answer {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724;
+        }
+
+        .wrong-answer {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24;
+        }
+
+        /* --- Controles do Quiz --- */
+        .quiz-controls {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        button#btn-calcular {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        button#btn-calcular:hover {
+            background-color: #004494;
+        }
+
+        button#btn-calcular:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        #resultado-final {
+            margin-top: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: none;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .nota-alta { background-color: #d4edda; color: #155724; }
+        .nota-media { background-color: #fff3cd; color: #856404; }
+        .nota-baixa { background-color: #f8d7da; color: #721c24; }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: #343a40;
+            color: white;
+            margin-top: 3rem;
+        }
+
+        /* --- Responsividade --- */
+        @media (max-width: 768px) {
+            header h1 { font-size: 2rem; }
+            .roles-grid { grid-template-columns: 1fr; }
+            article { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Scrum Master Class</h1>
+    <p>A Arte de Fazer o Dobro do Trabalho na Metade do Tempo</p>
+</header>
+
+<div class="container">
+
+    <!-- Seção 1: O Problema do Modelo Cascata -->
+    <article>
+        <h2>1. Adeus ao Modelo Cascata</h2>
+        <p>
+            Imagine passar seis meses trancado em uma caverna desenvolvendo um software, apenas para entregá-lo e descobrir que o cliente "mudou de ideia". Este é o cenário clássico do modelo <strong>Cascata (Waterfall)</strong>. Nele, tenta-se prever o futuro com especificações gigantescas, resultando frequentemente em desperdício de tempo e dinheiro.
+        </p>
+        <p>
+            O <strong>Scrum</strong> surge como a antítese disso. Não é mágica, nem religião. É uma metodologia ágil focada em empirismo: a arte de <span class="highlight">errar rápido para acertar logo</span>. Em vez de ciclos longos, trabalhamos em ciclos curtos de feedback constante.
+        </p>
+    </article>
+
+    <!-- Seção 2: Os Papéis (Roles) -->
+    <article>
+        <h2>2. Os Guardiões do Processo (Papéis)</h2>
+        <p>No Scrum, não existem "eu fiz a minha parte". Existe "nós entregamos". O time é autogerenciável e composto por três papéis fundamentais:</p>
+        
+        <div class="roles-grid">
+            <div class="role-card">
+                <h4>Product Owner (PO)</h4>
+                <p>A "voz do cliente". Prioriza o Backlog, decide O QUE será feito e garante que o time trabalhe nas funcionalidades de maior valor (ex: descascar a banana antes de tocar música).</p>
+            </div>
+            <div class="role-card">
+                <h4>Scrum Master</h4>
+                <p>Líder servidor e guardião do processo. Remove impedimentos, protege o time de interrupções externas e garante que o Scrum seja seguido. Não é chefe, é facilitador.</p>
+            </div>
+            <div class="role-card">
+                <h4>Time de Desenvolvimento</h4>
+                <p>Os profissionais que constroem o produto. Multidisciplinares e autônomos. Eles decidem COMO construir o que o PO pediu. Não há hierarquia interna.</p>
+            </div>
+        </div>
+    </article>
+
+    <!-- Seção 3: Cerimônias e Artefatos -->
+    <article>
+        <h2>3. O Ritmo da Selva (Eventos e Artefatos)</h2>
+        
+        <h3>A Sprint</h3>
+        <p>O coração do Scrum. Um <em>timebox</em> (caixa de tempo) de <strong>2 a 4 semanas</strong>. Uma vez iniciada, o escopo é travado. O objetivo é entregar um incremento de produto funcional ao final.</p>
+
+        <h3>Planejamento (Sprint Planning)</h3>
+        <p>O time seleciona itens do <em>Product Backlog</em> para o <em>Sprint Backlog</em>. As estimativas são feitas usando <strong>Story Points</strong> (baseados na sequência de Fibonacci: 1, 2, 3, 5, 8, 13...) para medir complexidade, não horas.</p>
+
+        <h3>Daily Scrum</h3>
+        <p>Reunião diária de 15 minutos, em pé. Foco no alinhamento, não em status report para o chefe. Três perguntas sagradas: O que fiz ontem? O que farei hoje? Há impedimentos?</p>
+
+        <h3>Review & Retrospectiva</h3>
+        <ul>
+            <li><strong>Sprint Review:</strong> Focada no PRODUTO. Demonstração do software funcionando para os stakeholders.</li>
+            <li><strong>Sprint Retrospective:</strong> Focada no TIME. "Terapia de grupo" para discutir melhoria contínua (Kaizen) do processo.</li>
+        </ul>
+
+        <h3>Definição de Pronto (DoD)</h3>
+        <p class="highlight">Código só escrito não está pronto. "Pronto" significa codado, testado, integrado e documentado.</p>
+    </article>
+
+    <!-- Seção 4: Quiz Interativo -->
+    <article id="quiz-section">
+        <h2>Teste Seus Conhecimentos</h2>
+        <p>Responda às questões abaixo para verificar seu entendimento sobre o Scrum. <br><small><em>Nota: As perguntas mudam se você atualizar a página.</em></small></p>
+        
+        <form id="quiz-form">
+            <!-- As perguntas serão injetadas aqui via JavaScript -->
+            <div id="questions-container"></div>
+            
+            <div class="quiz-controls">
+                <button type="button" id="btn-calcular" onclick="calcularNota()">Calcular Nota</button>
+            </div>
+        </form>
+
+        <div id="resultado-final"></div>
+    </article>
+
+</div>
+
+<footer>
+    <p>&copy; Halex System&reg</p>
+</footer>
+
+<script>
+    /**
+     * BANCO DE DADOS DE QUESTÕES (Simulação SQL)
+     * Contém 25 perguntas para garantir a regra de "40% de conteúdo novo" (10 de 25).
+     */
+    const questionBank = [
+        {
+            id: 1,
+            text: "Qual é o principal objetivo da Sprint no Scrum?",
+            options: ["Planejar o projeto inteiro", "Entregar um incremento de produto 'Pronto'", "Corrigir bugs da versão anterior", "Documentar o código"],
+            correct: 1 // Índice do array (0-based)
+        },
+        {
+            id: 2,
+            text: "Quem é responsável por priorizar o Backlog do Produto?",
+            options: ["Scrum Master", "Time de Desenvolvimento", "Product Owner (PO)", "Gerente de Projetos"],
+            correct: 2
+        },
+        {
+            id: 3,
+            text: "Qual a duração recomendada para uma Daily Scrum?",
+            options: ["30 minutos", "1 hora", "15 minutos", "O tempo que for necessário"],
+            correct: 2
+        },
+        {
+            id: 4,
+            text: "O que são Story Points?",
+            options: ["Estimativa em horas exatas", "Medida de complexidade baseada em Fibonacci", "Pontos de recompensa para o time", "Número de linhas de código"],
+            correct: 1
+        },
+        {
+            id: 5,
+            text: "Qual cerimônia é focada na melhoria do PROCESSO e do TIME?",
+            options: ["Sprint Review", "Daily Scrum", "Sprint Planning", "Sprint Retrospective"],
+            correct: 3
+        },
+        {
+            id: 6,
+            text: "No Scrum, o que acontece se o time não entregar tudo na Sprint?",
+            options: ["A Sprint é estendida", "O time faz hora extra obrigatória", "O que não foi feito volta para o backlog", "O projeto é cancelado"],
+            correct: 2
+        },
+        {
+            id: 7,
+            text: "Qual o papel do Scrum Master?",
+            options: ["Gerenciar as pessoas e salários", "Remover impedimentos e facilitar o processo", "Definir as tarefas técnicas", "Priorizar o produto"],
+            correct: 1
+        },
+        {
+            id: 8,
+            text: "Quem decide 'COMO' as tarefas serão implementadas tecnicamente?",
+            options: ["O Time de Desenvolvimento", "O Scrum Master", "O Product Owner", "O Cliente"],
+            correct: 0
+        },
+        {
+            id: 9,
+            text: "O que é o 'Definition of Done' (DoD)?",
+            options: ["Quando o código compila", "Um acordo do que constitui um item finalizado", "Quando o desenvolvedor diz que acabou", "Quando o QA inicia os testes"],
+            correct: 1
+        },
+        {
+            id: 10,
+            text: "O modelo Scrum é classificado como:",
+            options: ["Preditivo (Cascata)", "Ágil e Empírico", "Religioso", "Burocrático"],
+            correct: 1
+        },
+        {
+            id: 11,
+            text: "É permitido alterar o escopo da Sprint (Goal) depois que ela começa?",
+            options: ["Sim, a qualquer momento", "Não, a Sprint é um timebox fechado para evitar caos", "Apenas se o chefe mandar", "Sim, se for pago a mais"],
+            correct: 1
+        },
+        {
+            id: 12,
+            text: "Na Daily Scrum, quais são as 3 perguntas padrão?",
+            options: ["O que comi? O que bebi? O que dormi?", "O que fiz ontem? O que farei hoje? Há impedimentos?", "Quem errou? Quem conserta? Quanto custa?", "Como codar? Qual banco usar? Qual a senha?"],
+            correct: 1
+        },
+        {
+            id: 13,
+            text: "O Product Backlog é:",
+            options: ["Estático e nunca muda", "Uma lista viva e ordenada de tudo que pode ser necessário no produto", "Criado apenas no final do projeto", "Responsabilidade do Scrum Master"],
+            correct: 1
+        },
+        {
+            id: 14,
+            text: "O que é 'Scrum Zumbi'?",
+            options: ["Scrum feito à noite", "Seguir as cerimônias mecanicamente sem entender os princípios ágeis", "Um time que trabalha sem dormir", "Um bug que volta à vida"],
+            correct: 1
+        },
+        {
+            id: 15,
+            text: "Quem participa da Daily Scrum obrigatoriamente?",
+            options: ["Apenas o Scrum Master", "O Time de Desenvolvimento e o Scrum Master", "Os Diretores da empresa", "O Cliente final"],
+            correct: 1
+        },
+        {
+            id: 16,
+            text: "A sequência usada para Planning Poker geralmente é:",
+            options: ["1, 2, 3, 4, 5...", "2, 4, 6, 8, 10...", "1, 2, 3, 5, 8, 13 (Fibonacci)", "10, 20, 30, 40..."],
+            correct: 2
+        },
+        {
+            id: 17,
+            text: "Qual a diferença principal entre Sprint Review e Retrospective?",
+            options: ["Review é sobre o Produto; Retrospective é sobre o Processo", "Review é interna; Retrospective é com o cliente", "Não há diferença", "Review é opcional"],
+            correct: 0
+        },
+        {
+            id: 18,
+            text: "Qual é o tamanho ideal de um Time de Desenvolvimento?",
+            options: ["Quanto mais, melhor (30+)", "Pequeno o suficiente para ser ágil (3-9 pessoas)", "Apenas 1 pessoa", "Exatamente 20 pessoas"],
+            correct: 1
+        },
+        {
+            id: 19,
+            text: "O que o quadro Kanban ajuda a visualizar?",
+            options: ["O fluxo de trabalho e gargalos", "As horas trabalhadas", "O salário de cada um", "A hierarquia da empresa"],
+            correct: 0
+        },
+        {
+            id: 20,
+            text: "Se um 'bug' crítico aparece em produção durante a sprint, quem decide a prioridade dele?",
+            options: ["O Desenvolvedor Sênior", "O Scrum Master", "O Product Owner (PO)", "O estagiário"],
+            correct: 2
+        },
+        {
+            id: 21,
+            text: "Estimar em horas é considerado uma prática ruim no Scrum purista porque:",
+            options: ["Relógios são caros", "Horas são absolutas, mas a complexidade varia dependendo de quem faz", "O Scrum Master não sabe ver horas", "O cliente não gosta"],
+            correct: 1
+        },
+        {
+            id: 22,
+            text: "Quem deve remover os impedimentos que bloqueiam o time?",
+            options: ["O Product Owner", "O Scrum Master", "O Gerente de RH", "O próprio impedimento"],
+            correct: 1
+        },
+        {
+            id: 23,
+            text: "O que significa 'Timebox'?",
+            options: ["Uma caixa para guardar relógios", "Um período de tempo fixo e máximo para uma atividade", "O tempo livre do time", "Um aplicativo de calendário"],
+            correct: 1
+        },
+        {
+            id: 24,
+            text: "A Sprint Review é o momento para:",
+            options: ["Mostrar slides em PowerPoint", "Inspecionar o incremento (software funcionando) e adaptar o backlog", "Reclamar do chefe", "Planejar as férias"],
+            correct: 1
+        },
+        {
+            id: 25,
+            text: "Qual valor o Scrum prioriza acima de 'seguir um plano'?",
+            options: ["Negociação de contratos", "Documentação abrangente", "Responder a mudanças", "Processos e ferramentas"],
+            correct: 2
+        }
+    ];
+
+    let currentQuestions = [];
+
+    /**
+     * Função para embaralhar array (Algoritmo Fisher-Yates)
+     * Garante aleatoriedade na seleção das perguntas.
+     */
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    /**
+     * Inicializa o Quiz
+     * Seleciona 10 perguntas aleatórias do banco de 25.
+     */
+    function initQuiz() {
+        const shuffledBank = shuffleArray([...questionBank]); // Clona e embaralha
+        currentQuestions = shuffledBank.slice(0, 10); // Pega as primeiras 10
+
+        const container = document.getElementById('questions-container');
+        container.innerHTML = '';
+
+        currentQuestions.forEach((q, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'quiz-question';
+            questionDiv.innerHTML = `
+                <h4>${index + 1}. ${q.text}</h4>
+                <div class="options-group" id="q${index}-options">
+                    ${q.options.map((opt, i) => `
+                        <label id="q${index}-opt${i}-label">
+                            <input type="radio" name="q${index}" value="${i}">
+                            ${opt}
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+            container.appendChild(questionDiv);
+        });
+    }
+
+    /**
+     * Calcula a nota e fornece feedback visual
+     */
+    function calcularNota() {
+        let score = 0;
+        const btn = document.getElementById('btn-calcular');
+        
+        // 1. Desativar botão para evitar duplo envio (Regra 2d)
+        btn.disabled = true;
+        btn.innerText = "Calculando...";
+
+        currentQuestions.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const optionsLabels = document.querySelectorAll(`#q${index}-options label`);
+            
+            // Remove estilos anteriores
+            optionsLabels.forEach(lbl => {
+                lbl.classList.remove('correct-answer', 'wrong-answer');
+            });
+
+            // Lógica de Correção e Estilização
+            const correctIndex = q.correct;
+            const correctLabel = document.getElementById(`q${index}-opt${correctIndex}-label`);
+            
+            // Marca a resposta correta em verde (sempre)
+            correctLabel.classList.add('correct-answer');
+
+            if (selected) {
+                const userVal = parseInt(selected.value);
+                if (userVal === correctIndex) {
+                    score++;
+                } else {
+                    // Marca a resposta errada do usuário em vermelho
+                    const wrongLabel = document.getElementById(`q${index}-opt${userVal}-label`);
+                    wrongLabel.classList.add('wrong-answer');
+                }
+            }
+        });
+
+        // Exibir Resultado
+        const resultDiv = document.getElementById('resultado-final');
+        resultDiv.style.display = 'block';
+        
+        let feedbackClass = '';
+        let feedbackText = '';
+
+        if (score >= 8) {
+            feedbackClass = 'nota-alta';
+            feedbackText = "Excelente! Você é um Scrum Master nato.";
+        } else if (score >= 5) {
+            feedbackClass = 'nota-media';
+            feedbackText = "Bom trabalho! Mas revise alguns conceitos.";
+        } else {
+            feedbackClass = 'nota-baixa';
+            feedbackText = "Precisa estudar mais! Revise o artigo acima.";
+        }
+
+        resultDiv.className = feedbackClass;
+        resultDiv.innerHTML = `Sua Nota: ${score}/10<br><small>${feedbackText}</small>`;
+        
+        btn.innerText = "Nota Calculada";
+    }
+
+    // Inicia o quiz ao carregar a página
+    window.onload = initQuiz;
+
+</script>
+
+</body>
+</html>
